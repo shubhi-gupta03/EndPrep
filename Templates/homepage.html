@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZSem</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <div class="log">
+            <h1>EZSem</h1>
+        </div>
+        {%if user.is_authenticated %}
+        <div class="container3">
+            <div class="profile">
+            <p align="justify"><b>Welcome<br>{{user.first_name}}.</b></p>
+            <a href="Accounts/logout" class="btn3">Logout</a>
+            </div>
+            <div class="choose">
+            <a href="{% url 'options' %}" class="btn2">Enter</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="container3">
+            <div class="head">Get Started</div>
+            <div class="cred">    
+            <a href="{% url 'register' %}" class="btn">Sign Up</a>
+            <a href="{% url 'login' %}" class="btn">Login</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>   
+</body>
+
+</html>
+
+    

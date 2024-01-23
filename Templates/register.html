@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/9e97db3298.js" crossorigin="anonymous"></script>
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    
+</head>
+
+<body>
+    <div class="container">
+    <form action="register" id="form1" method="POST">
+        {% csrf_token %}
+        <center><h1>Register</h1></center>
+        <div class="box">
+            <i class="fa fa-user"></i>
+            <input type="text" name="name" id="name" placeholder="Enter Your Name" form="form1">
+        </div>
+        <div class="box">
+            <i class="fa fa-university"></i>
+            <input type="text" name="roll" id="roll" placeholder="Enter Your University Roll Number" form="form1">               
+        </div>
+        <div class="box">
+            <i class="fa fa-calendar"></i>
+            <input type="text" name="dob" id="dob" placeholder="Date of Birth" onfocus="(this.type='Date')" form="form1">
+        </div>
+        <div class="box">
+            <i class="fa fa-envelope"></i>
+            <input type="text" name="email" id="email" placeholder="Enter Your Email" form="form1">
+        </div>
+        <div class="box">
+            <p>
+                <i class="fa fa-key"></i>
+                <input type="password" name="password" id="password" placeholder="Enter Your Password" form="form1">
+                <i class="fa-regular fa-eye" onclick="pass()" id="pass-icon"></i>
+            </p>
+        </div>
+        <div class="box">
+            <p>
+                <i class="fa fa-key"></i>
+                <input type="password" name="confirmpassword" id="confirmpassword" placeholder="Confirm Password" form="form1">
+                <i class="fa-regular fa-eye" onclick="pass()" id="pass-icon"></i>
+            </p>
+        </div>
+    </form>
+    {% for message in messages %}
+    <div class="error">{{message}}</div>
+    {% endfor %}
+        <center>
+        <button class="btn" type="submit" form="form1" value="Submit">Create Account</button>
+        </center>
+        <center>
+            <div class="new">
+    <p>Already Have an Account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+    </center> 
+    </div>
+    <script src="{% static 'js/slide.js' %}"></script>
+</body>
+</html>

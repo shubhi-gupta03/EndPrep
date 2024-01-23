@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: white no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container{
+    color: black;
+    position: absolute;
+    height: 350px;
+    width: 400px;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 10px;
+    padding: 15px 15px ;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    margin: 25px;
+    
+}
+
+.container h1{
+    font-size: 40px;
+    border-bottom: 5px solid black;
+    margin-bottom: 50px;
+    padding: 13px 0;
+}
+
+
+.select {
+    width: 210px;
+    border: 1px solid black;
+    border-radius: 0.25em;
+    padding: 0.25em 0.5em;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1.1;
+    background-color: #fff;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+}
+
+.branch{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.semester{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.semester .select{
+    width: 235px;
+}
+
+.btn{
+    margin: 50px;
+    font-size: medium;
+    color: black;
+    background: none;
+    cursor: pointer;
+    outline: none;
+    width: 25%;
+    padding: 6px;
+    border: 2px solid black;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: .5s;
+    display: block;
+}
+.btn:hover{
+    color: white;
+    background-color: green;
+    font-weight: bold;
+}
