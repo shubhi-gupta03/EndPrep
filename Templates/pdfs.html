@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/9e97db3298.js" crossorigin="anonymous"></script>
     <title>Requirements</title>
-    <link rel="stylesheet" href="{% static 'css/pdfs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/options.css' %}">
 </head>
 
 <body>
+    <a href="/" class="btn2">Home</a>
     <div class="container">
-    <center><h1>CHOOSE</h1></center>
+    <center><h1>Question Papers</h1></center>
+    <p>*Note : Some Questions also have solutions but not all!</p>
     <form method="get">
         <center>
         <select class="select" id="year" name="year" onchange="this.form.submit()">
@@ -24,24 +26,39 @@
     </center>
     </form>
 <center>
-    <h3>Year {{selected_year}}</h3>
-        <table>
-            <tr>
-                {% for student in students %}
-                    <th>{{ student.name }}</th>
-                {% endfor %}
-            </tr>
-            <tr>
-                    {% if pdf_links %}
-                        {% for link in pdf_links %}
-                            <td><a href="{{ link }}" target="_blank">Link</a></td>
-                        {% endfor %}
-                    {% else %}
+    <br>
+            {% if grouped_data %}
+            <h2>{{select}} Year</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>2018-19</th>
+                        <th>2019-20</th>
+                        <th>2020-21</th>
+                        <th>2021-22</th>
+                        <th>2022-23</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    {% for name, links in grouped_data.items %}
                         
-                    {% endif %}
-            </tr>
+                            {% for i in range %}
+                                {% if i == name %}
+                                    {% for link in links %}
+                                        <td><a href="{{ link }}" target="_blank" class="btn">PDF Link</a></td>
+                                    {% endfor %}
+                                
+                                {% endif %}
+                            {% endfor %}
+                        
+                    {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        {% else %}
             
-        </table>
+        {% endif %}
     </center>
     <script src="{% static 'js/options.js' %}"></script>
 </body>
