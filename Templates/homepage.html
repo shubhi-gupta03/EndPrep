@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZSem</title>
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
 </head>
 <body>
 
     <div class="container">
         <div class="log">
-            <h1>EZSem</h1>
+            <img src="{% static 'css\Screenshot 2024-01-31 172811.png' %}" class="image">
         </div>
         {%if user.is_authenticated %}
         <div class="container3">
@@ -20,7 +20,7 @@
             <a href="Accounts/logout" class="btn3">Logout</a>
             </div>
             <div class="choose">
-            <a href="{% url 'options' %}" class="btn2">Enter</a>
+            <a href="{% url 'pdfs.html' %}" class="btn2">Enter</a>
             </div>
         </div>
         {% else %}
@@ -32,7 +32,8 @@
             </div>
         </div>
         {% endif %}
-    </div>   
+    </div>
+    <script src="{% static 'js/slide.js' %}"></script>   
 </body>
 
 </html>

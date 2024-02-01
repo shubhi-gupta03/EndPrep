@@ -3,7 +3,7 @@
     padding: 0;
 }
 body{
-    background: white no-repeat center center fixed;
+    background: rgb(103, 155, 198) no-repeat center center fixed;
     background-size: cover;
     height: 100vh;
     width: 100vw;
@@ -14,9 +14,10 @@ body{
 
 .container{
     color: black;
+    background-color: white;
     position: absolute;
-    height: 350px;
-    width: 400px;
+    height: 550px;
+    width: 700px;
     border: 2px solid rgba(255,255,255,.2);
     border-radius: 10px;
     padding: 15px 15px ;
@@ -46,15 +47,9 @@ body{
     background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
 }
 
-.branch{
-    margin-top: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .semester{
-    margin-top: 50px;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -65,22 +60,36 @@ body{
 }
 
 .btn{
-    margin: 50px;
-    font-size: medium;
     color: black;
     background: none;
     cursor: pointer;
     outline: none;
-    width: 25%;
+    width: 30%;
+    margin: 12px 0;
     padding: 6px;
     border: 2px solid black;
     border-radius: 10px;
     font-weight: bold;
     transition: .5s;
     display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    align-items: center;
 }
+table{
+    width:100%;
+    margin-top: 20px;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+    align-items: center;
+}
+th, td {
+    padding: 15px;
+    text-align: center;
+  }
 .btn:hover{
     color: white;
-    background-color: green;
+    background-color: black;
     font-weight: bold;
 }
