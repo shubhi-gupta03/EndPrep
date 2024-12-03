@@ -1,41 +1,42 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EZSem</title>
-    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
-</head>
-<body>
-
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}" />
+  </head>
+  <body>
     <div class="container">
-        <div class="log">
-            <img src="{% static 'css\Screenshot 2024-01-31 172811.png' %}" class="image">
+      <div class="log">
+        <img
+          src="{% static 'css/Screenshot 2024-12-01 005341.png' %}"
+          class="image"
+        />
+      </div>
+      {%if user.is_authenticated %}
+      <div class="container3">
+        <div class="profile">
+          <p align="justify">
+            <b>Welcome<br />{{user.first_name}}.</b>
+          </p>
+          <a href="Accounts/logout" class="btn3">Logout</a>
         </div>
-        {%if user.is_authenticated %}
-        <div class="container3">
-            <div class="profile">
-            <p align="justify"><b>Welcome<br>{{user.first_name}}.</b></p>
-            <a href="Accounts/logout" class="btn3">Logout</a>
-            </div>
-            <div class="choose">
-            <a href="{% url 'pdfs.html' %}" class="btn2">Enter</a>
-            </div>
+        <div class="choose">
+          <a href="{% url 'papers.html' %}" class="btn2">Enter</a>
         </div>
-        {% else %}
-        <div class="container3">
-            <div class="head">Get Started</div>
-            <div class="cred">    
-            <a href="{% url 'register' %}" class="btn">Sign Up</a>
-            <a href="{% url 'login' %}" class="btn">Login</a>
-            </div>
+      </div>
+      {% else %}
+      <div class="container3">
+        <div class="head">Get Started</div>
+        <div class="cred">
+          <a href="{% url 'register' %}" class="btn">Sign Up</a>
+          <a href="{% url 'login' %}" class="btn">Login</a>
         </div>
-        {% endif %}
+      </div>
+      {% endif %}
     </div>
-    <script src="{% static 'js/slide.js' %}"></script>   
-</body>
-
+    <script src="{% static 'js/slide.js' %}"></script>
+  </body>
 </html>
-
-    

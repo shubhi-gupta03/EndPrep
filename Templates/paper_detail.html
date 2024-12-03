@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ paper.subject }} - Question Paper</title>
+    <link rel="stylesheet" href="{% static 'css/paper_details.css' %}" />
+  </head>
+  <body>
+    <h1>{{ paper.subject }}</h1>
+    <embed
+      src="{{ paper.file.url }}"
+      type="application/pdf"
+      width="100%"
+      height="450px"
+    />
+
+    <div id="chatbot-container" data-paper-id="{{ paper_id }}">
+      <div id="chatbot-messages"></div>
+      <input type="text" id="chatbot-input" placeholder="Ask a question..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script src="{% static 'js/chatbot.js' %}"></script>
+  </body>
+</html>

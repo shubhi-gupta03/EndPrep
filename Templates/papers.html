@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Papers</title>
+    <link rel="stylesheet" href="{% static 'css/papers.css' %}" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="filters">
+        <div class="filter">
+          <h3>Year:</h3>
+          {% for year in years %}
+          <button onclick="filterYear('{{ year }}')" class="filter-button">
+            {{ year }}
+          </button>
+          {% endfor %}
+        </div>
+        <div id="branch-filter" class="filter">
+          <h3>Branch:</h3>
+          {% for branch in branches %}
+          <button
+            onclick="filterPapers(null, '{{ branch }}', null)"
+            class="filter-button"
+          >
+            {{ branch }}
+          </button>
+          {% endfor %}
+        </div>
+        <div class="filter">
+          <h3>Paper Year:</h3>
+          {% for paper_year in paper_years %}
+          <button
+            onclick="filterPapers(null, null, '{{ paper_year }}')"
+            class="filter-button"
+          >
+            {{ paper_year }}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="papers" class="papers-grid">
+        {% for paper in papers %}
+        <div class="paper">
+          <h4>{{ paper.subject }}</h4>
+          <a href="{% url 'paper_detail' paper.id %}">Details</a>
+          <a href="{{ paper.file.url }}" download>Download</a>
+        </div>
+        {% empty %}
+        <p>No papers found for the selected filters.</p>
+        {% endfor %}
+      </div>
+      <div>
+
+    <script>
+      function filterYear(year) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("year", year);
+        const branchFilter = document.getElementById("branch-filter");
+        if (year === "1st") {
+          branchFilter.style.display = "none"; 
+        } else {
+          branchFilter.style.display = "block"; 
+        }
+        window.location.href = url.toString();
+      }
+      function filterPapers(year, branch, paper_year) {
+        const url = new URL(window.location.href);
+        if (year) url.searchParams.set("year", year);
+        if (branch) url.searchParams.set("branch", branch);
+        if (paper_year) url.searchParams.set("paper_year", paper_year);
+        window.location.href = url.toString();
+      }
+    </script>
+  </body>
+</html>
