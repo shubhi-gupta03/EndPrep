@@ -1,5 +1,6 @@
+import fitz
 from django.db import models
-
+from django.contrib.auth.models import User
 class QuestionPaper(models.Model):
     YEAR_CHOICES = [
         ('1st', '1st Year'),
@@ -12,7 +13,6 @@ class QuestionPaper(models.Model):
         ('IT', 'Information Technology'),
         ('Allied', 'Allied Branches'),
     ]
-    
     year_of_study = models.CharField(max_length=10, choices=YEAR_CHOICES)
     branch = models.CharField(max_length=10, choices=BRANCH_CHOICES, blank=True, null=True)  # Optional for 1st year
     paper_year = models.CharField(max_length=9)  # e.g., "2018-19"
@@ -25,17 +25,46 @@ class QuestionPaper(models.Model):
     
     def save(self, *args, **kwargs):
         if self.file and not self.text_content:
-            try:
-                self.text_content = extract_text_from_pdf(self.file.path)
-            except Exception as e:
-                print(f"Error extracting text for {self.subject}: {e}")
+            self.text_content = extract_pdf_text(self.file.path)
         super().save(*args, **kwargs)
-        
-    def extract_text_from_pdf(file_path):
-        text = ""
-        with open(file_path, 'rb') as pdf_file:
-            reader = PyPDF2.PdfReader(pdf_file)
-            for page in reader.pages:
-                text += page.extract_text()
-        return text
+
+
+def extract_pdf_text(pdf_path):
+    document = fitz.open(pdf_path)
+    text = ""
+    for page_num in range(document.page_count):
+        page = document.load_page(page_num)
+        text += page.get_text("text")
+    return text
+
+def extract_pdf_questions(pdf_path):
+    document = fitz.open(pdf_path)
+    questions = []
+    for page_num in range(document.page_count):
+        page = document.load_page(page_num)
+        text = page.get_text("text")
+        questions += extract_questions_from_text(text)
+    return questions
+
+def extract_questions_from_text(text):
+    lines = text.split('\n')
+    questions = [line for line in lines if line.endswith('?')]
+    return questions
+
+class DiscussionThread(models.Model):
+    paper = models.OneToOneField('QuestionPaper', on_delete=models.CASCADE, related_name='discussion_thread')
+
+class Comment(models.Model):
+    thread = models.ForeignKey(DiscussionThread, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    upvotes = models.ManyToManyField(User, related_name='upvoted_comments', blank=True)
+
+    def upvote_count(self):
+        return self.upvotes.count()
+    
+    
 

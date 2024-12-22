@@ -46,7 +46,8 @@
         {% for paper in papers %}
         <div class="paper">
           <h4>{{ paper.subject }}</h4>
-          <a href="{% url 'paper_detail' paper.id %}">Details</a>
+          <span class="sub-detail"><p>{{ paper.paper_year }}</p><p class="study-year">{{ paper.year_of_study }} Year</p></span>
+          <a href="{% url 'paper_detail' paper.id %}">Open</a>
           <a href="{{ paper.file.url }}" download>Download</a>
         </div>
         {% empty %}

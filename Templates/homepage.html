@@ -11,7 +11,7 @@
     <div class="container">
       <div class="log">
         <img
-          src="{% static 'css/Screenshot 2024-12-01 005341.png' %}"
+          src="{% static 'css/Screenshot_2024-12-03_121915-removebg-preview.png' %}"
           class="image"
         />
       </div>
@@ -19,7 +19,11 @@
       <div class="container3">
         <div class="profile">
           <p align="justify">
-            <b>Welcome<br />{{user.first_name}}.</b>
+            <b class="welcome"
+              >Welcome,<br /><span class="username"
+                >{{user.first_name}}</span
+              ></b
+            >
           </p>
           <a href="Accounts/logout" class="btn3">Logout</a>
         </div>

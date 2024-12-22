@@ -1,12 +1,14 @@
 from django.shortcuts import render, get_object_or_404
+from .models import DiscussionThread, Comment
 from django.http import HttpResponse, JsonResponse
-import sys,time
 from django.db.models import Q
 from django.http import FileResponse
-import openai
 from django.conf import settings
 from .models import QuestionPaper
-import PyPDF2
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required, user_passes_test
+import json
+
 
 def home(request):
     return render(request,'homepage.html')
@@ -25,26 +27,22 @@ def download_paper(request, pk):
     return FileResponse(paper.file, as_attachment=True)
 
 def papers_view(request):
-    # Example query parameters
     year = request.GET.get('year')
     branch = request.GET.get('branch')
     paper_year = request.GET.get('paper_year')
-
-    # Query the database based on filters (adjust as per your models)
     papers = QuestionPaper.objects.all()
     if year:
         papers = papers.filter(year_of_study=year)
-    if branch and year != '1st':  # Exclude branch filtering for 1st year
+    if branch and year != '1st':
         papers = papers.filter(branch=branch)
     if paper_year:
         papers = papers.filter(paper_year=paper_year)
-
-    # Pass filters and options to the template
+        
     context = {
         'papers': papers,
-        'years': ['1st', '2nd', '3rd', '4th'],  # Pass years list to the template
-        'branches': ['CSE', 'IT', 'Allied'],  # Pass branches
-        'paper_years': papers.values_list('paper_year', flat=True).distinct(),  # Unique paper years
+        'years': ['1st', '2nd', '3rd', '4th'],
+        'branches': ['CSE', 'IT', 'Allied'],
+        'paper_years': papers.values_list('paper_year', flat=True).distinct(),
     }
     return render(request, 'papers.html', context)
 
@@ -58,7 +56,7 @@ def get_filtered_papers(request):
     if year:
         papers = papers.filter(year_of_study=year)
 
-    if branch and year != "1st":  # 1st year doesn't have a branch filter
+    if branch and year != "1st": 
         papers = papers.filter(branch=branch)
 
     if paper_year:
@@ -76,20 +74,68 @@ def get_filtered_papers(request):
 
 def paper_detail(request, paper_id):
     paper = get_object_or_404(QuestionPaper, id=paper_id)
-    return render(request, 'paper_detail.html', {'paper_id': paper_id, 'paper': paper})
+    thread, _ = DiscussionThread.objects.get_or_create(paper=paper)
+    return render(request, 'paper_detail.html', {'paper_id': paper_id, 'paper': paper, 'thread': thread,  'current_user': request.user.username})
 
 
-openai.api_key = settings.OPENAI_API_KEY
-def chatbot_api(request, paper_id):
-    if request.method == "POST":
-        question = request.POST.get("question")
-        paper = get_object_or_404(QuestionPaper, id=paper_id)
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": f"You are assisting with questions based on this content: {paper.text_content}"},
-                {"role": "user", "content": question}
-            ]
-        )
-        answer = response['choices'][0]['message']['content']
-        return JsonResponse({"answer": answer})
+def get_comments(request, thread_id):
+    thread = get_object_or_404(DiscussionThread, id=thread_id)
+    comments = thread.comments.filter(parent__isnull=True).order_by('-created_at').select_related('user')
+    data = []
+    for comment in comments:
+        data.append({
+            "id": comment.id,
+            "content": comment.content,
+            "user": comment.user.username,
+            "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M"),
+            "upvote_count": comment.upvote_count(),
+            "can_delete": comment.user == request.user,
+            "replies": [
+                {
+                    "id": reply.id,
+                    "content": reply.content,
+                    "user": reply.user.username,
+                    "created_at": reply.created_at.strftime("%Y-%m-%d %H:%M"),
+                    "upvote_count": reply.upvote_count(),
+                    "can_delete": comment.user == request.user,
+                }
+                for reply in comment.replies.all()
+            ],
+        })
+    return JsonResponse(data, safe=False)
+
+@csrf_exempt
+@login_required
+def post_comment(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        thread = get_object_or_404(DiscussionThread, id=data.get('thread_id'))
+        content = data.get('content')
+        parent_id = data.get('parent_id')
+
+        if not content:
+            return JsonResponse({"error": "Content cannot be empty."}, status=400)
+
+        parent_comment = None
+        if parent_id:
+            parent_comment = get_object_or_404(Comment, id=parent_id, thread=thread)
+
+        comment = Comment.objects.create(thread=thread, user=request.user, content=content, parent=parent_comment)
+        return JsonResponse({"success": True, "comment_id": comment.id})
+
+    return JsonResponse({"error": "Invalid request method."}, status=400)
+
+def is_admin(user):
+    return user.is_staff or user.is_superuser
+
+@csrf_exempt
+@login_required
+
+def delete_comment(request, comment_id):
+    try:
+        comment = Comment.objects.get(id=comment_id, user=request.user)
+        comment.delete()
+        return JsonResponse({'success': True})
+    except Comment.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Comment not found or permission denied'}, status=404)
+    
