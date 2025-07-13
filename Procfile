@@ -1,0 +1,1 @@
+web: gunicorn shumarit.wsgi --log-file - 
