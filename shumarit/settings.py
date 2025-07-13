@@ -82,13 +82,11 @@ WSGI_APPLICATION = 'shumarit.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Shumarit',
-        'USER': 'postgres',
-        'PASSWORD':'umar12',
-        'HOST':'localhost'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
+
 
 
 # Password validation
